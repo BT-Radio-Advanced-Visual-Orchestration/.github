@@ -58,6 +58,38 @@ This directory contains configuration files that provide automated dependency ma
 2. Ensure required status checks are configured (build, test, lint)
 3. Grant workflow permissions in Settings > Actions > General > Workflow permissions
 
+### `.github/workflows/auto-delete-branch.yml`
+**Purpose**: Automatically delete branches after a pull request is merged.
+
+**What it does**:
+- Triggers when a PR is closed
+- Checks if the PR was actually merged (not just closed)
+- Automatically deletes the source branch from the repository
+- Only deletes branches from the same repository (not from forks)
+- Adds a comment confirming the branch deletion
+
+**How it works**:
+1. **Delete Branch Job**: Runs when a PR is merged
+2. Uses GitHub API to delete the branch
+3. Posts a comment confirming the cleanup action
+
+**Benefits**:
+- Keeps the repository clean and organized
+- Prevents accumulation of stale branches
+- Reduces confusion about which branches are active
+- Automatic cleanup without manual intervention
+
+**Safety guarantees**:
+- Only deletes after successful merge
+- Never deletes branches from closed (unmerged) PRs
+- Preserves fork branches (only deletes from same repository)
+- Fails gracefully if branch is already deleted
+
+**How to use**:
+1. Copy to any B.R.A.V.O. repository's `.github/workflows/` directory
+2. Grant workflow permissions in Settings > Actions > General > Workflow permissions
+3. Works automatically without any additional configuration
+
 ### `ruleset.json`
 **Purpose**: Defines repository protection rules and governance policies.
 
@@ -151,6 +183,13 @@ curl -X POST \
                     │  (Dependabot) │
                     │  or Manual    │
                     │  merge (Dev)  │
+                    └───────┬───────┘
+                            │
+                            ▼
+                    ┌───────────────┐
+                    │  Auto-delete  │
+                    │  branch after │
+                    │  merge ✓      │
                     └───────────────┘
 ```
 
@@ -158,6 +197,7 @@ curl -X POST \
 
 - [ ] Copy `.github/dependabot.yml` to repository
 - [ ] Copy `.github/workflows/auto-merge-dependabot.yml` to repository
+- [ ] Copy `.github/workflows/auto-delete-branch.yml` to repository
 - [ ] Apply `ruleset.json` via Repository Settings or API
 - [ ] Create a `CODEOWNERS` file defining code owners
 - [ ] Configure required workflows: build, test, lint
@@ -173,6 +213,7 @@ curl -X POST \
 4. **Quality**: Required checks prevent broken code from merging
 5. **Transparency**: Clear rules and automated feedback
 6. **Scalability**: Works across firmware, mobile, web, API, and infrastructure repos
+7. **Cleanliness**: Automatic branch cleanup keeps repositories organized
 
 ## Customization
 
