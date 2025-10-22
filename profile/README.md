@@ -1,15 +1,15 @@
-# beacon-relay-for-asset-view-&-orchestration — Code Name: B.R.A.V.O
+# beacon-relay-for-asset-view-&-orchestration — Code Name: B.R.A.V.O.
 
-**B.R.A.V.O** is the GitHub organization powering an **open-source smart collar**.
+**B.R.A.V.O.** is the GitHub organization powering an **open-source smart collar**.
 
 The idea comes from my own paranoia and fear of losing my free-spirited shepsky, **Bravo**. This project aims to combine the latest in **LoRa, GPS, BLE, IMU, and LTE/5G technology** to create a scalable, modular system for tracking and monitoring devices — starting with collars for pets like Bravo.
 
 
 ## 🚀 Mission
 
-* Build an **open-source ecosystem** for personal tracking and IoT devices.
+* Build an **open-source ecosystem** for asset tracking.
 * Create a **modular, future-proof architecture** to support additional sensors and features.
-* Provide a **secure and scalable platform** for telemetry, mapping, and notifications.
+* Provide a **secure and scalable platform** for telemetry, mapping, notifications.
 
 
 ## 📦 Current Repositories
@@ -18,7 +18,7 @@ The idea comes from my own paranoia and fear of losing my free-spirited shepsky,
 | ------------------ | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
 | **Firmware**       | ESP32 collar & dongle firmware (LoRa, GPS, BLE, IMU, OTA updates)            | [firmware](https://github.com/BT-Radio-Advanced-Visual-Orchestration/firmware) |
 | **Mobile**         | Galaxy Android app for LoRa gateway, telemetry, and map visualization        | [mobile](https://github.com/BT-Radio-Advanced-Visual-Orchestration/mobile)     |
-| **Web Dashboard**  | React/Next.js dashboard at `flaccidfacade.dev/bravo`                         | [web](https://github.com/BT-Radio-Advanced-Visual-Orchestration/web)           |
+| **Web Dashboard**  | React/Next.js dashboard at domain tbd                                        | [web](https://github.com/BT-Radio-Advanced-Visual-Orchestration/web)           |
 | **API**            | AWS Lambda / API Gateway endpoints for telemetry, OTA, and device management | [api](https://github.com/BT-Radio-Advanced-Visual-Orchestration/api)           |
 | **Infrastructure** | IaC stacks for AWS (IoT Core, DynamoDB, S3/CloudFront)                       | [infra](https://github.com/BT-Radio-Advanced-Visual-Orchestration/infra)       |
 
