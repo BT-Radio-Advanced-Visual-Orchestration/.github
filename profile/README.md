@@ -1,6 +1,6 @@
-# BT-Radio-Advanced-Visual-Orchestration — Code Name: B.R.A.V.O
+# beacon-relay-for-asset-view-&-orchestration — Code Name: B.R.A.V.O
 
-**B.R.A.V.O** is the GitHub organization powering an **open-source tracking solution**.
+**B.R.A.V.O** is the GitHub organization powering an **open-source smart collar**.
 
 The idea comes from my own paranoia and fear of losing my free-spirited shepsky, **Bravo**. This project aims to combine the latest in **LoRa, GPS, BLE, IMU, and LTE/5G technology** to create a scalable, modular system for tracking and monitoring devices — starting with collars for pets like Bravo.
 
