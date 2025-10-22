@@ -43,7 +43,6 @@ We welcome contributions!
 
 ## 🌐 Contact
 
-* **Website:** [flaccidfacade.dev](https://flaccidfacade.dev)
-* **Email:** [FlaccidFacade@pm.me](mailto:FlaccidFacade@pm.me)
+* **Email:** [bravo-gps@proton.me](mailto:bravo-gps@proton.me)
 * **Discussions / Issues:** Use each repo’s Issues tab for project-specific questions.
 
