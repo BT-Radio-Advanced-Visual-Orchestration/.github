@@ -4,6 +4,82 @@ This directory contains configuration files that provide automated dependency ma
 
 ## Files Overview
 
+### `.github/labels.yml`
+**Purpose**: Defines standard labels used across all B.R.A.V.O. repositories.
+
+**What it does**:
+- Defines a comprehensive set of labels for organizing and categorizing PRs and issues
+- Includes labels for:
+  - **Automation tools**: copilot, dependabot
+  - **Dependencies**: dependencies
+  - **Programming languages**: python, javascript, typescript, java, rust, go, csharp, cpp, ruby, php, swift, kotlin
+  - **Infrastructure**: terraform, docker, github-actions
+  - **Change types**: documentation, ci, testing, configuration
+  - **Additional categories**: bugfix, enhancement, security, performance
+- Labels are automatically applied to PRs by the auto-label workflow
+- Uses standard GitHub label colors matching common conventions
+
+**How to use**:
+1. Copy to any B.R.A.V.O. repository's `.github/` directory
+2. Run the "Sync Labels" workflow to create/update labels in the repository
+3. Customize by adding/removing labels as needed for your project
+4. Labels will be automatically applied to PRs by the auto-label workflow
+
+### `.github/workflows/auto-label-pr.yml`
+**Purpose**: Automatically assigns labels to PRs based on changed files.
+
+**What it does**:
+- Triggers when a PR is opened, updated, or reopened
+- Analyzes all changed files in the PR
+- Automatically applies relevant labels based on:
+  - **File extensions**: Detects programming languages (.py, .js, .ts, .java, .rs, .go, etc.)
+  - **File names**: Identifies config files, Dockerfiles, dependency files
+  - **File paths**: Recognizes test files, documentation, workflows
+  - **PR metadata**: Detects Copilot PRs (branch name) and Dependabot PRs (author)
+- Posts a comment listing all applied labels
+- Helps with PR organization, filtering, and at-a-glance understanding
+
+**How it works**:
+1. **Checkout**: Gets the repository code
+2. **Get changed files**: Compares PR branch with base branch
+3. **Determine labels**: Analyzes files and determines which labels to apply
+4. **Apply labels**: Uses GitHub API to add labels to the PR
+5. **Comment**: Posts a summary comment (optional, fails gracefully)
+
+**Examples**:
+- PR changing `.py` files → `python` label
+- PR changing `.github/workflows/*.yml` files → `github-actions` + `ci` labels
+- PR from `dependabot[bot]` → `dependabot` + `dependencies` labels
+- PR from `copilot/*` branch → `copilot` label
+- PR changing `README.md` → `documentation` label
+
+**How to use**:
+1. Copy to any B.R.A.V.O. repository's `.github/workflows/` directory
+2. Ensure labels are created in the repository (use sync-labels workflow)
+3. Workflow runs automatically on all PRs
+4. No configuration needed - works out of the box
+
+### `.github/workflows/sync-labels.yml`
+**Purpose**: Syncs label definitions from `.github/labels.yml` to the repository.
+
+**What it does**:
+- Triggers automatically when `.github/labels.yml` is modified on main/master branch
+- Can also be triggered manually via workflow dispatch
+- Creates new labels that don't exist
+- Updates existing labels to match the configuration (name, color, description)
+- Does not delete labels that aren't in the config file (safe operation)
+
+**How it works**:
+1. Uses the `EndBug/label-sync` action to sync labels
+2. Reads configuration from `.github/labels.yml`
+3. Applies changes to the repository via GitHub API
+
+**How to use**:
+1. Copy to any B.R.A.V.O. repository's `.github/workflows/` directory
+2. Push changes to `.github/labels.yml` to trigger automatic sync
+3. Or manually trigger via Actions tab > Sync Labels > Run workflow
+4. Verify labels in repository Settings > Labels
+
 ### `.github/dependabot.yml`
 **Purpose**: Automated dependency updates across all supported package ecosystems.
 
@@ -157,25 +233,26 @@ curl -X POST \
                 │   opened on branch   │
                 └──────────────────────┘
                             │
-        ┌───────────────────┼───────────────────┐
-        ▼                   ▼                   ▼
-┌──────────────┐  ┌──────────────────┐  ┌─────────────┐
-│ Dependabot?  │  │  Ruleset.json    │  │  CI/CD      │
-│ Auto-approve │  │  Validates:      │  │  Workflows  │
-│ & enable     │  │  - Need review   │  │  Run:       │
-│ auto-merge   │  │  - Status checks │  │  - build    │
-└──────────────┘  │  - No force push │  │  - test     │
-        │         └──────────────────┘  │  - lint     │
-        │                   │           └─────────────┘
-        │                   │                   │
-        └───────────────────┼───────────────────┘
-                            │
-                    ┌───────▼────────┐
-                    │  All checks ✓  │
-                    │  - Tests pass  │
-                    │  - Approved    │
-                    │  - No conflicts│
-                    └───────┬────────┘
+        ┌───────────────────┼───────────────────┬──────────────────┐
+        ▼                   ▼                   ▼                  ▼
+┌──────────────┐  ┌──────────────────┐  ┌─────────────┐  ┌──────────────┐
+│ Auto-label   │  │ Dependabot?      │  │  Ruleset    │  │  CI/CD       │
+│ Analyzes     │  │ Auto-approve     │  │  Validates: │  │  Workflows   │
+│ files &      │  │ & enable         │  │  - Reviews  │  │  Run:        │
+│ applies      │  │ auto-merge       │  │  - Checks   │  │  - build     │
+│ labels 🏷️    │  └──────────────────┘  │  - History  │  │  - test      │
+└──────────────┘           │             └─────────────┘  │  - lint      │
+        │                  │                    │          └─────────────┘
+        │                  │                    │                  │
+        └──────────────────┼────────────────────┼──────────────────┘
+                           │                    │
+                    ┌──────▼────────┐          │
+                    │  All checks ✓ │◀─────────┘
+                    │  - Tests pass │
+                    │  - Approved   │
+                    │  - Labeled    │
+                    │  - No issues  │
+                    └───────┬───────┘
                             │
                             ▼
                     ┌───────────────┐
@@ -195,15 +272,20 @@ curl -X POST \
 
 ## Setup Checklist for New B.R.A.V.O. Repositories
 
+- [ ] Copy `.github/labels.yml` to repository
 - [ ] Copy `.github/dependabot.yml` to repository
+- [ ] Copy `.github/workflows/sync-labels.yml` to repository
+- [ ] Copy `.github/workflows/auto-label-pr.yml` to repository
 - [ ] Copy `.github/workflows/auto-merge-dependabot.yml` to repository
 - [ ] Copy `.github/workflows/auto-delete-branch.yml` to repository
 - [ ] Apply `ruleset.json` via Repository Settings or API
+- [ ] Run "Sync Labels" workflow to create repository labels
 - [ ] Create a `CODEOWNERS` file defining code owners
 - [ ] Configure required workflows: build, test, lint
 - [ ] Grant workflow permissions: Settings > Actions > Workflow permissions > Read/Write
 - [ ] Enable "Allow auto-merge" in Settings > General
 - [ ] Test with a test Dependabot PR
+- [ ] Test auto-labeling by creating a test PR
 
 ## Benefits
 
@@ -214,6 +296,8 @@ curl -X POST \
 5. **Transparency**: Clear rules and automated feedback
 6. **Scalability**: Works across firmware, mobile, web, API, and infrastructure repos
 7. **Cleanliness**: Automatic branch cleanup keeps repositories organized
+8. **Organization**: Automatic PR labeling improves discoverability and filtering
+9. **Visibility**: Labels provide at-a-glance understanding of PR scope and technology
 
 ## Customization
 
