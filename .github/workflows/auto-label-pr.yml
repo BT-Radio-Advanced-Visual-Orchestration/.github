@@ -56,7 +56,7 @@ jobs:
           }
           
           # Check for Copilot PR (branch name pattern)
-          if [[ "${{ github.head_ref }}" == copilot/* ]]; then
+          if [[ "${{ github.head_ref }}" =~ ^copilot/ ]]; then
             add_label "copilot"
           fi
           
@@ -161,7 +161,7 @@ jobs:
             fi
             
             # Testing
-            if [[ "$file" =~ (test|spec|__tests__|\.test\.|\.spec\.).*$ ]] || [[ "$file" =~ tests/ ]]; then
+            if [[ "$file" =~ (tests?|specs?|__tests__|__mocks__) ]] || [[ "$file" =~ \.(test|spec)\. ]] || [[ "$file" =~ [_-](test|spec)\. ]]; then
               add_label "testing"
             fi
             
@@ -199,12 +199,12 @@ jobs:
           echo "Applying labels: $LABEL_ARRAY"
           
           # Apply labels using GitHub API
-          gh api \
+          echo "{\"labels\": $LABEL_ARRAY}" | gh api \
             --method POST \
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             "/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels" \
-            -f "labels=$LABEL_ARRAY"
+            --input -
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
