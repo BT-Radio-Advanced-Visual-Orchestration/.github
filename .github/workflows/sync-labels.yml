@@ -1,0 +1,33 @@
+# Sync Labels workflow
+# This workflow ensures that the labels defined in .github/labels.yml are synced to the repository
+# Creates new labels and updates existing ones to match the configuration
+# Should be run when labels.yml is changed or manually triggered
+
+name: Sync Labels
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - '.github/labels.yml'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  sync:
+    name: Sync Repository Labels
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Sync labels
+        uses: EndBug/label-sync@v2
+        with:
+          config-file: .github/labels.yml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          delete-other-labels: false
