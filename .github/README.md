@@ -90,6 +90,85 @@ This directory contains configuration files that provide automated dependency ma
 2. Grant workflow permissions in Settings > Actions > General > Workflow permissions
 3. Works automatically without any additional configuration
 
+### `.github/workflows/auto-label-pr.yml`
+**Purpose**: Automatically assign labels to pull requests based on file changes.
+
+**What it does**:
+- Triggers when a PR is opened, synchronized, or reopened
+- Analyzes changed files to detect programming languages, tools, and change types
+- Automatically applies relevant labels to the PR
+- Posts a comment summarizing the applied labels
+
+**Labels applied based on**:
+- **Programming languages**: Python, JavaScript, TypeScript, Java, Rust, Go, C#, C++, Ruby, PHP, Swift, Kotlin
+- **Infrastructure tools**: Docker, Terraform, GitHub Actions
+- **Change types**: Documentation, Testing, Configuration, Dependencies
+- **Special markers**: Copilot PRs (by branch name), Dependabot PRs
+
+**How it works**:
+1. **Get changed files**: Compares PR branch with base branch
+2. **Determine labels**: Analyzes file extensions and patterns
+3. **Apply labels**: Uses GitHub API to add labels to the PR
+4. **Comment on PR**: Posts a summary of applied labels
+
+**Benefits**:
+- Instant visual categorization of PR content
+- Easy filtering and searching of PRs by type
+- Better understanding of PR scope at a glance
+- Automatic organization without manual effort
+
+**How to use**:
+1. Ensure labels exist in the repository (use sync-labels.yml workflow)
+2. Copy to any B.R.A.V.O. repository's `.github/workflows/` directory
+3. Grant workflow permissions: pull-requests: write, contents: read
+
+### `.github/workflows/sync-labels.yml`
+**Purpose**: Synchronize repository labels from the labels.yml configuration file.
+
+**What it does**:
+- Triggers when labels.yml is modified and pushed to main
+- Can be manually triggered via workflow_dispatch
+- Creates or updates labels in the repository based on the configuration
+- Ensures consistent labeling across all repositories
+
+**How it works**:
+1. Reads label definitions from `.github/labels.yml`
+2. For each label, creates it if new or updates it if existing
+3. Uses GitHub API to manage labels
+
+**Benefits**:
+- Centralized label management
+- Consistent labels across repositories
+- Easy to add or modify labels
+- Automatic synchronization
+
+**How to use**:
+1. Define labels in `.github/labels.yml`
+2. Copy workflow to `.github/workflows/` directory
+3. Grant workflow permissions: issues: write
+4. Push changes to main or trigger manually
+
+### `.github/labels.yml`
+**Purpose**: Define standard labels used across B.R.A.V.O. repositories.
+
+**Contains**:
+- 26+ predefined labels for common use cases
+- Language labels with appropriate colors
+- Tool and infrastructure labels
+- Change type labels (bugfix, enhancement, security, performance)
+
+**Label categories**:
+1. **Automation**: copilot, dependabot
+2. **Languages**: python, javascript, typescript, java, rust, go, csharp, cpp, ruby, php, swift, kotlin
+3. **Infrastructure**: terraform, docker, github-actions
+4. **Change types**: documentation, ci, testing, configuration, dependencies
+5. **Additional**: bugfix, enhancement, security, performance
+
+**How to use**:
+1. Copy to repository's `.github/` directory
+2. Customize colors and descriptions as needed
+3. Use with sync-labels.yml workflow to apply to repository
+
 ### `ruleset.json`
 **Purpose**: Defines repository protection rules and governance policies.
 
